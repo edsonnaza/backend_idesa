@@ -1,0 +1,666 @@
+{
+	"info": {
+		"_postman_id": "beb64d33-8d82-4731-be86-dcaf8417c570",
+		"name": "IDESA API",
+		"description": "#### En esta libreria se encuentra para consumir ambos proyectos, es decir:\n\n####   \n_**Tarea 1**_  \n**Diseña un REST API en PHP (Puedes usar cualquier Framework PHP Laravel, Slim, Symphony, Cake) con una base de datos (pgsql o mysql).** El servicio debera de componerse de los siguientes componentes. \n\n- Autenticacion \n    \n- Conjunto de servicios de un tema a eleccion (Debe de tener al menos 2 campos llaves foraneas Ejemplo: Ciudad, Pais, Tipo Animal, Tipo Enfermedad etc.), con los servicios se debe poder: \n    \n    - Ver todos los registros \n        \n    - Ver un Registro en particular \n        \n    - Agregar un Registro \n        \n    - Actualizar un Registro \n        \n    - Eliminar un Registro \n        \n- 2 Servicios visualizar los detalles de las llaves foraneas (Ciudad, Tipo Animal, Tipo Enfermedad). \n    \n\n#### _**Tarea 2:**_**  \nPara avanzar con tu proceso de Seleccion realiza los siguientes bugfix**\n\n### Desafio #1\n\n- Ejecuta el script DesafioUno.php\n    \n- Realiza las correciones Necesarias en la funcion getClientDebt a fin del que el json que devuelva de la siguiente manera:\n    \n\n{ \"status\": true, \"message\": \"Tienes Lotes para cobrar\", \"data\": { \"total\": 570000, \"detail\": \\[ { \"id\": 6, \"lote\": \"00148\", \"precio\": 190000, \"clientID\": \"123456\", \"vencimiento\": \"2022-12-01\" }, { \"id\": 7, \"lote\": \"00148\", \"precio\": 190000, \"clientID\": \"123456\", \"vencimiento\": \"2023-01-01\" }, { \"id\": 8, \"lote\": \"00148\", \"precio\": 190000, \"clientID\": \"123456\", \"vencimiento\": \"2023-02-01\" } \\] } }\n\n### Desafio #2\n\n- Ejecuta el script DesafiaDos.php\n    \n- Realiza las correciones Necesarias en la funcion retriveLotes y en la funcion getLotes a fin del que el json que devuelva de la siguiente manera:\n    \n\n\\[ { \"id\": 4, \"lote\": \"00148\", \"precio\": 130000, \"clientID\": 123456, \"vencimiento\": \"2022-10-01\" }, { \"id\": 5, \"lote\": \"00148\", \"precio\": 145000, \"clientID\": 123456, \"vencimiento\": null }, { \"id\": 6, \"lote\": \"00148\", \"precio\": 190000, \"clientID\": 123456, \"vencimiento\": \"2022-12-01\" }, { \"id\": 7, \"lote\": \"00148\", \"precio\": 190000, \"clientID\": 123456, \"vencimiento\": \"2023-01-01\" }, { \"id\": 8, \"lote\": \"00148\", \"precio\": 190000, \"clientID\": 123456, \"vencimiento\": \"2023-02-01\" } \\]\n\n### Desafio #3\n\n- Realiza un Servicio REST que retorne todos los lotes datos de un lote segun el id enviado como parametro, utilizando la base idesa.db del Archivo Database.php",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7576949"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'http://127.0.0.1:8000/sanctum/csrf-cookie',\r",
+							"    method: 'GET'\r",
+							"}, function (error, response, { cookies }) {\r",
+							"    if (!error) {\r",
+							"        pm.environment.set('xsrf-token', cookies.get('XSRF-TOKEN'))\r",
+							"    }\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "admin@idesa.com.py",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "pass123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/logout",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							" "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Referer",
+						"value": "{{referer}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/user",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Debts",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							" "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Referer",
+						"value": "{{referer}}",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/debts/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"debts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Productos",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							" "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Referer",
+						"value": "{{referer}}",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/productos",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"productos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Categorias",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							" "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Referer",
+						"value": "{{referer}}",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/categorias",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"categorias"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Producto",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'http://127.0.0.1:8000/sanctum/csrf-cookie',\r",
+							"    method: 'GET'\r",
+							"}, function (error, response, { cookies }) {\r",
+							"    if (!error) {\r",
+							"        pm.environment.set('xsrf-token', cookies.get('XSRF-TOKEN'))\r",
+							"    }\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Referer",
+						"value": "{{referer}}",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/teachers?first_name=dsadasdsa&last_name=dsadsadas&email=mymaildsadasdas3ssss2s@example.com&phone=1234567890",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"teachers"
+					],
+					"query": [
+						{
+							"key": "first_name",
+							"value": "dsadasdsa"
+						},
+						{
+							"key": "last_name",
+							"value": "dsadsadas"
+						},
+						{
+							"key": "email",
+							"value": "mymaildsadasdas3ssss2s@example.com"
+						},
+						{
+							"key": "phone",
+							"value": "1234567890"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar Producto",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'http://127.0.0.1:8000/sanctum/csrf-cookie',\r",
+							"    method: 'GET'\r",
+							"}, function (error, response, { cookies }) {\r",
+							"    if (!error) {\r",
+							"        pm.environment.set('xsrf-token', cookies.get('XSRF-TOKEN'))\r",
+							"    }\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Referer",
+						"value": "{{referer}}",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n         \n            \"nombre\": \"Smartphone Iphone 13 PRO MAX\",\n            \"descripcion\": \"Teléfono inteligente APPLE PLUS\",\n            \"precio\": \"1100.00\",\n            \"categoria_id\": 1,\n            \"proveedor_id\": 1\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/productos/5",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"productos",
+						"5"
+					],
+					"query": [
+						{
+							"key": "first_name",
+							"value": "dsadasdsa",
+							"disabled": true
+						},
+						{
+							"key": "last_name",
+							"value": "dsadsadas",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "mymaildasas@example.com",
+							"disabled": true
+						},
+						{
+							"key": "phone",
+							"value": "1234567890",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Producto",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'http://127.0.0.1:8000/sanctum/csrf-cookie',\r",
+							"    method: 'GET'\r",
+							"}, function (error, response, { cookies }) {\r",
+							"    if (!error) {\r",
+							"        pm.environment.set('xsrf-token', cookies.get('XSRF-TOKEN'))\r",
+							"    }\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Referer",
+						"value": "{{referer}}",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n    \"precio\": \"1400.00\"         \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/productos/5",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"productos",
+						"5"
+					],
+					"query": [
+						{
+							"key": "first_name",
+							"value": "dsadasdsa",
+							"disabled": true
+						},
+						{
+							"key": "last_name",
+							"value": "dsadsadas",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "mymaildasas@example.com",
+							"disabled": true
+						},
+						{
+							"key": "phone",
+							"value": "1234567890",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Producto",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'http://127.0.0.1:8000/sanctum/csrf-cookie',\r",
+							"    method: 'GET'\r",
+							"}, function (error, response, { cookies }) {\r",
+							"    if (!error) {\r",
+							"        pm.environment.set('xsrf-token', cookies.get('XSRF-TOKEN'))\r",
+							"    }\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Referer",
+						"value": "{{referer}}",
+						"type": "default"
+					},
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/productos/5",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"productos",
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "default"
+		},
+		{
+			"key": "referer",
+			"value": "127.0.0.1:8000",
+			"type": "default"
+		}
+	]
+}

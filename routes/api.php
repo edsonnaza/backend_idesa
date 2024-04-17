@@ -7,6 +7,7 @@ use App\Http\Controllers\debtController;
 use App\Http\Controllers\proveedorController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\categoriaController;
+use App\Http\Controllers\DesafioUnoController;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     // Obtiene el usuario autenticado
     $user = $request->user();
@@ -73,4 +74,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::patch('/debts/{id}', [debtController::class, 'updatePartial']);
 
     Route::delete('/debts/{id}', [debtController::class, 'destroy']);
+
+
+    // Ruta para DesafioUno
+    Route::get('/desafio-uno/{id}', [DesafioUnoController::class, 'index']);
 });
