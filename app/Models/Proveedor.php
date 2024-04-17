@@ -18,11 +18,13 @@ class Proveedor extends Model
        
     ];
 
+    public $timestamps = false; // Deshabilita los timestamps
+
      /**
      * Obtiene los productos con sus proveedor(s).
      */
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Producto::class);
     }
 }

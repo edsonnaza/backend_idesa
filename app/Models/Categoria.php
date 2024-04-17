@@ -16,8 +16,10 @@ class Categoria extends Model
        
     ];
 
+    public $timestamps = false; // Deshabilita los timestamps
+
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Producto::class);
     }
 }

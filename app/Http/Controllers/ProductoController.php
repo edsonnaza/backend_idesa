@@ -5,26 +5,31 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Producto;
+use App\Http\Resources\ProductoResource;
+ 
 
 class ProductoController extends Controller
 {
     public function index()
     {
-        $productos = Producto::all();
+        $productos = Producto::with('proveedor', 'categoria')->get();
 
         if ($productos->isEmpty()) {
             $data = [
                 'message' => 'No se encontraron datos en productos',
-                'status' => 200
+                'status' => 404
             ];
             return response()->json($data, 404);
         }
-
+    
+        // Formatear los productos utilizando el recurso ProductoResource
+        $productosFormatted = ProductoResource::collection($productos);
+    
         $data = [
-            'productos' => $productos,
+            'productos' => $productosFormatted,
             'status' => 200
         ];
-
+    
         return response()->json($data, 200);
     }
 
@@ -39,13 +44,34 @@ class ProductoController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $errors = $validator->errors();
+            $emptyFields = [];
+            
+            // Iterar sobre los errores y encontrar los campos vacíos
+            foreach ($errors->messages() as $field => $error) {
+                if (empty($error)) {
+                    $emptyFields[] = $field;
+                }
+            }
+            
+            // Verificar si hay campos vacíos
+            if (!empty($emptyFields)) {
+                // Construir el mensaje de error incluyendo los campos vacíos
+                $message = 'Los siguientes campos están vacíos: ' . implode(', ', $emptyFields);
+            } else {
+                // Si no hay campos vacíos, mostrar un mensaje genérico
+                $message = 'Error en la validación de los datos. Por favor, complete todos los campos requeridos.';
+            }
+            
             $data = [
-                'message' => 'Error en la validación de los datos',
-                'errors' => $validator->errors(),
+                'message' => $message,
                 'status' => 400
             ];
+            
             return response()->json($data, 400);
         }
+        
+        
 
         $producto = Producto::create([
             'nombre' => $request->nombre,
@@ -62,9 +88,12 @@ class ProductoController extends Controller
             ];
             return response()->json($data, 500);
         }
-
+        
+         // Formatear los productos utilizando el recurso ProductoResource
+         $productoFormatted = new ProductoResource($producto);
+    
         $data = [
-            'producto' => $producto,
+            'producto' => $productoFormatted,
             'status' => 201
         ];
 
@@ -82,6 +111,7 @@ class ProductoController extends Controller
             ];
             return response()->json($data, 404);
         }
+        
 
         $data = [
             'producto' => $producto,
@@ -104,7 +134,7 @@ class ProductoController extends Controller
         }
         
         $producto->delete();
-
+        
         $data = [
             'message' => 'Producto eliminado',
             'status' => 200
@@ -149,10 +179,11 @@ class ProductoController extends Controller
         $producto->proveedor_id = $request->proveedor_id;
 
         $producto->save();
-
+        
+        $productoFormatted = new ProductoResource($producto);
         $data = [
             'message' => 'Producto actualizado',
-            'producto' => $producto,
+            'producto' => $productoFormatted,
             'status' => 200
         ];
 
@@ -208,10 +239,10 @@ class ProductoController extends Controller
         }
 
         $producto->save();
-
+        $productoFormatted = new ProductoResource($producto);
         $data = [
             'message' => 'Producto actualizado',
-            'producto' => $producto,
+            'producto' => $productoFormatted,
             'status' => 200
         ];
 

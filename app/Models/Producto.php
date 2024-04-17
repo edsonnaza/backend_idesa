@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Proveedor;
+use App\Models\Categoria;
 
 class Producto extends Model
 {
@@ -20,21 +22,23 @@ class Producto extends Model
 
        
     ];
-
+    public $timestamps = false; // Deshabilita los timestamps
 
     /**
      * Get the category that owns the product.
      */
-    public function category()
+    public function categoria()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Categoria::class);
     }
 
     /**
      * Get the providers that supply the product.
      */
-    public function providers()
-    {
-        return $this->belongsToMany(Provider::class);
-    }
+    
+        public function proveedor()
+        {
+            return $this->belongsTo(Proveedor::class);
+        }
+   
 }

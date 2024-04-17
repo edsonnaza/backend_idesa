@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'IDESA SA',
-            'email' => 'idesa@gmail.com',
-            'password' => Hash::make('password'),
+            'email' => 'admin@idesa.com.py',
+            'password' => Hash::make('pass123'),
         ]);
 
         // Llama al DebtSeeder

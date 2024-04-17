@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Debt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\DebtsResource;
 
 class debtController extends Controller
 {
@@ -21,26 +22,19 @@ class debtController extends Controller
             return response()->json($data, 404);
         }
 
-        $data = [
-            'debts' => $debts,
-            'status' => 200
-        ];
+           // Formatear los registros utilizando el recurso DebtsResource
+           $datosFormatted = DebtsResource::collection($debts);
+    
+            $data = [
+                'debts' => $datosFormatted,
+                'status' => 200
+            ];
 
         return response()->json($data, 200);
     }
 
     public function store(Request $request)
     {
-
-        // 'lote',
-        // 'precio',
-        // 'clientID',
-        // 'vencimiento'
-
-        // $table->string('lote');
-        // $table->integer('precio');
-        // $table->integer('clientID');
-        // $table->date('vencimiento')->nullable();
 
         $validator = Validator::make($request->all(), [
             'lote' => 'required|max:255',
@@ -72,9 +66,12 @@ class debtController extends Controller
             ];
             return response()->json($data, 500);
         }
-
+        
+          // Formatear los registros utilizando el recurso DebtsResource
+          $datosFormatted = DebtsResource::collection($debt);
+    
         $data = [
-            'debt' => $debt,
+            'debt' => $datosFormatted,
             'status' => 201
         ];
 
@@ -93,9 +90,12 @@ class debtController extends Controller
             ];
             return response()->json($data, 404);
         }
-
+ 
+                  // Formatear el modelo utilizando el recurso DebtResource
+                  $datosFormatted = new DebtsResource($debt);
+    
         $data = [
-            'debt' => $debt,
+            'debt' => $datosFormatted,
             'status' => 200
         ];
 
@@ -158,10 +158,13 @@ class debtController extends Controller
         $debt->vencimiento = $request->vencimiento;
 
         $debt->save();
-
+        
+         // Formatear los registros utilizando el recurso DebtsResource
+         $datosFormatted = new DebtsResource($debt);
+    
         $data = [
             'message' => 'Registro actualizado',
-            'debt' => $debt,
+            'debt' => $datosFormatted,
             'status' => 200
         ];
 
@@ -214,10 +217,12 @@ class debtController extends Controller
         }
 
         $debt->save();
-
+         // Formatear los registros utilizando el recurso DebtsResource
+         $datosFormatted = new DebtsResource($debt);
+    
         $data = [
             'message' => 'Registro actualizado',
-            'debt' => $debt,
+            'debt' => $datosFormatted,
             'status' => 200
         ];
 
